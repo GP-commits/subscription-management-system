@@ -1,30 +1,23 @@
-# Frontend handoff
+# Separate frontend handoff
 
-## Ownership
+The frontend is supplied as a standalone source archive. It is not tracked in GP-commits/subscription-management-system, in accordance with the owner's request. The initial commit contained only a frontend placeholder README; application frontend code has never been pushed here.
 
-Frontend contributors work in `frontend/`; backend contributors work in `backend/`. Shared interface and requirement documentation belongs in `docs/`. This is one repository whose applications will be independently runnable; it can be split into separate repositories later if requested.
+## Running independently
 
-## Integration contract to establish first
+Unzip the frontend source, install Node 24.14 or newer Node 24, run `npm ci`, and run `npm run dev`. Keep the backend running on port 4000. The Vite proxy maps `/api` to `http://localhost:4000`; `VITE_API_URL` can configure a different API base. Use consistent `localhost` hostnames in development so cookie sessions work.
 
-Agree authentication transport and CSRF policy, API base URL, role/capability responses, pagination/filtering, date/time formats, decimal money representation, currency codes, field validation errors, status values, and lifecycle action endpoints. Publish an OpenAPI contract before parallel application implementation.
+Run `npm test` and `npm run build` before submitting changes. The archive contains its own package manifest, lockfile, source, environment example, README, tests, and future GitHub Actions workflow. No node_modules, runtime secrets, database, or Git credentials belong in the archive.
 
-## Screens
+## Integration
 
-1. Registration, login, forgot/reset password.
-2. Internal dashboard and filtered reports.
-3. Customer management.
-4. Product/variant and plan management.
-5. Quotation templates and customer quotations.
-6. Subscription list, detail, transition actions, and billing history.
-7. Invoice list, detail, confirmation, cancellation, sending, and printing.
-8. Payment recording and invoice allocation.
-9. Customer portal restricted to the current customer's records.
-10. Admin-only staff, tax, and discount management.
+Use [the API contract](api.md). Money values are in major currency units, dates use YYYY-MM-DD, requests include credentials, and server errors use `{error}`. All authorization and financial calculations are authoritative on the backend. The frontend must not manufacture paid statuses or dashboard totals.
 
-## Git workflow
+For deployment, serve the frontend and reverse-proxy `/api` under the same HTTPS origin. Configure the backend's FRONTEND_URL accordingly. If using separate origins, cookie and origin policies must be configured and tested explicitly.
 
-Create a feature branch from current `main`, commit only the intended changes, push the branch, and open a pull request. Do not rewrite shared history. This repository is private, so a teammate needs repository access before they can clone or contribute. The teammate's identity and collaborator permissions will be handled when supplied by the owner.
+## Publishing later
 
-## Acceptance
+When the owner supplies the friend's GitHub account or repository, initialize/push the independent frontend there with the account owner's authorization. Do not copy the backend .git directory or credentials. Keeping source separate means frontend contributors can commit and deploy without rewriting backend history.
 
-Provide loading, empty, error, validation, and permission-denied states. Connect all completed screens to real API behavior. Demonstrate customer isolation, permitted lifecycle actions, correct monetary display, and printable invoices. Track mocked or unfinished interactions explicitly.
+## Design
+
+The owner requested a Zoho Billing-style application layout using the [official Odoo brand palette](https://www.odoo.com/page/brand-assets): purple #714B67, teal #017E84, gray #8F8F8F. The product retains the Brightloop name from the PDF. The interactive Zoho demo could not be inspected because browser approval was declined; the dashboard is an interpretation of that requested layout, not a verified pixel-for-pixel reproduction.

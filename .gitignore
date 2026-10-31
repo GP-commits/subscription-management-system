@@ -12,3 +12,9 @@ coverage/
 __pycache__/
 .DS_Store
 Thumbs.db
+data/
+playwright-report/
+test-results/
+*.zip
+# Frontend is delivered separately for the teammate's GitHub account.
+/frontend/

@@ -1,0 +1,16 @@
+{
+  "name": "brightloop-subscription-management",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brightloop subscription management backend repository",
+  "engines": {
+    "node": ">=24.14.0 <25"
+  },
+  "scripts": {
+    "setup": "npm --prefix backend ci",
+    "dev": "npm --prefix backend run dev",
+    "seed": "npm --prefix backend run seed",
+    "test": "npm --prefix backend test",
+    "check": "npm test"
+  }
+}
