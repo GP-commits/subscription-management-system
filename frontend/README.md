@@ -2,7 +2,7 @@
 
 An independently runnable React application for Brightloop Software's subscription management system. This directory is a complete standalone frontend project: it has its own package manifest, lockfile, environment example, tests, build configuration, and GitHub Actions workflow. It can be extracted into a new repository without a monorepo dependency.
 
-The interface uses a billing-workspace layout with a dense sidebar, overview cards, revenue chart, invoice tables, and account screens. Its purple `#714B67`, teal `#017E84`, and neutral gray palette is inspired by the [official Odoo brand assets](https://www.odoo.com/page/brand-assets). Brightloop is the product name; this project is not an official Odoo or Zoho application. Typography requests locally installed Inter with a system-font fallback; no third-party font request is required.
+The interface uses a billing-workspace layout with a neutral sidebar, overview cards, revenue chart, invoice tables, and account screens. Its purple `#714B67`, teal `#017E84`, and neutral gray palette is inspired by the [official Odoo brand assets](https://www.odoo.com/page/brand-assets). Brightloop is the product name; this project is not an official Odoo or Zoho application. Typography requests locally installed Inter with a system-font fallback; no third-party font request is required. See [design notes](DESIGN-NOTES.md) for the approved Unslop direction, attribution, and verification limits.
 
 ## Run locally
 
@@ -32,14 +32,14 @@ npm test
 npm run build
 ```
 
-`npm test` runs Vitest with jsdom and Testing Library. The suite exercises login, registration password policy, forgot/reset-password flows, role-based navigation, customer profile restrictions, product/variant submission, API error handling, payment reversal confirmation, loading states, and monetary/date formatting. It mocks the network to verify frontend behavior; backend integration and billing correctness tests belong to the separate API project.
+`npm test` runs Vitest with jsdom and Testing Library. All 27 tests pass. The suite exercises login/logout, registration password policy, forgot/reset-password flows, role-based navigation, customer profile restrictions, product/variant submission, API error handling, payment reversal confirmation, loading states, and monetary/date formatting. It also checks dialog keyboard containment and focus restoration, selected navigation announcements, and exact chart data across currencies, large values, zero amounts, and long histories. It mocks the network to verify frontend behavior; backend integration and billing correctness tests belong to the separate API project.
 
 `npm run build` produces the static application in `dist/`. `npm run preview` serves it locally at port 4173; set backend `FRONTEND_URL=http://localhost:4173` before testing mutations from this origin. Browser screenshot and visual regression checks were not performed because the browser approval gate declined access; component tests and the production build were run.
 
 ## Screens and behavior
 
 - **Authentication:** customer registration, login/logout, password reset request, and reset-link form.
-- **Overview and reports:** server-provided active subscriptions, invoiced revenue, cash received, outstanding balances, overdue invoices, monthly recurring revenue, a revenue chart, and date/customer/plan filters.
+- **Overview and reports:** server-provided active subscriptions, invoiced revenue, cash received, outstanding balances, overdue invoices, monthly recurring revenue, a scrollable revenue chart with an exact monthly-amount table, and date/customer/plan filters.
 - **Customers:** contact and billing details; customers can edit their own permitted profile fields.
 - **Catalog:** product types, sales/cost prices, notes, and variants with price adjustments.
 - **Plans:** daily/weekly/monthly/yearly cadence, base fee, minimum quantity, sales availability, and closure/pause/renewal flags.
@@ -72,6 +72,18 @@ Subscription line input `unitPrice` is the base price before the variant adjustm
 
 ## Handoff to another GitHub account
 
-Extract this folder into an empty working directory. Run `npm ci`, `npm test`, and `npm run build`, then initialize and push it into the intended frontend repository. The included `.github/workflows/ci.yml` runs tests and the build on Node 24. Keep `node_modules/`, `dist/`, credentials, and real `.env` files out of Git.
+The separate `brightloop-frontend.bundle` preserves the initial commit and subsequent feature commits. Clone it to keep that history, then point the remote at the team's frontend repository when that account is available:
+
+```sh
+git clone brightloop-frontend.bundle brightloop-frontend
+cd brightloop-frontend
+git remote set-url origin <FRONTEND_REPOSITORY_URL>
+npm ci
+npm test
+npm run build
+git push -u origin main
+```
+
+The source-only `brightloop-frontend.zip` can instead be extracted into an empty working directory; it does not contain Git history. The included `.github/workflows/ci.yml` runs tests and the build on Node 24. Keep `node_modules/`, `dist/`, credentials, and real `.env` files out of Git.
 
 The backend remains separately hosted and maintained. Set `VITE_API_URL` and the backend `FRONTEND_URL` together for the team's deployment. No frontend GitHub account or collaborator access has been configured yet.
