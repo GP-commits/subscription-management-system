@@ -130,6 +130,22 @@ describe('authentication workflows', () => {
   });
 });
 describe('workspace permissions and real mutations', () => {
+  it('announces the selected navigation item and provides a clearly named sign-out action', async () => {
+    const calls = mockServer();
+    render(<App />);
+    const user = userEvent.setup();
+    const nav = await screen.findByRole('navigation', { name: 'Main navigation' });
+    const overview = within(nav).getByRole('button', { name: 'Overview' });
+    expect(overview).toHaveAttribute('aria-current', 'page');
+    const invoices = within(nav).getByRole('button', { name: 'Invoices' });
+    await user.click(invoices);
+    expect(invoices).toHaveAttribute('aria-current', 'page');
+    expect(overview).not.toHaveAttribute('aria-current');
+    await user.click(screen.getByRole('button', { name: 'Sign out', exact: true }));
+    await screen.findByRole('heading', { name: 'Sign in to Brightloop' });
+    expect(calls.some((call) => call.path === '/auth/logout' && call.method === 'POST')).toBe(true);
+  });
+
   it('limits customer navigation and omits protected fields from profile updates', async () => {
     const customer = { ...admin, role: 'customer', customerId: 'c1' };
     const calls = mockServer({

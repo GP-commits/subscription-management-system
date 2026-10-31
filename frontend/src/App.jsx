@@ -1,20 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Activity,
-  ArrowDownLeft,
   ArrowRight,
-  ArrowUpRight,
   BarChart3,
   Bell,
   Building2,
   CalendarDays,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
   ClipboardList,
-  CreditCard,
   Download,
   FileText,
   Layers3,
@@ -22,23 +17,21 @@ import {
   LogOut,
   Mail,
   Menu,
-  MoreHorizontal,
   Package,
-  Pause,
   Percent,
-  Play,
   Plus,
   RefreshCw,
   Search,
   Settings2,
   ShieldCheck,
-  Sparkles,
   Trash2,
   Users,
   Wallet,
   X,
 } from 'lucide-react';
 import { api, API_BASE } from './api.js';
+import Modal from './components/Modal.jsx';
+import RevenueChart from './components/RevenueChart.jsx';
 import { money, date, today, passwordValid, query, initials } from './utils.js';
 
 const NAV = [
@@ -363,67 +356,6 @@ function Alert({ children, kind = 'error' }) {
     </div>
   ) : null;
 }
-function Modal({ title, subtitle, children, onClose, wide = false }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const prev = document.activeElement;
-    ref.current?.focus();
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'Tab') {
-        const els = ref.current?.querySelectorAll(
-          'button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href]',
-        );
-        if (!els?.length) return;
-        const first = els[0],
-          last = els[els.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-      prev?.focus();
-    };
-  }, []);
-  return (
-    <div
-      className="modal-shade"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <section
-        className={`modal ${wide ? 'wide' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="dialog-title"
-        tabIndex={-1}
-        ref={ref}
-      >
-        <header className="modal-header">
-          <div>
-            <h2 id="dialog-title">{title}</h2>
-            {subtitle && <p>{subtitle}</p>}
-          </div>
-          <button className="icon-button" aria-label="Close dialog" onClick={onClose}>
-            <X size={20} />
-          </button>
-        </header>
-        {children}
-      </section>
-    </div>
-  );
-}
-
 function Auth({ onLogin }) {
   const params = new URLSearchParams(location.search);
   const initial = location.pathname === '/reset-password' ? 'reset' : 'login';
@@ -1155,7 +1087,9 @@ function Table({ resource, items, lookups, onSelect, compact = false, currency =
         <thead>
           <tr>
             {columns.map((c) => (
-              <th key={c.key}>{c.label}</th>
+              <th key={c.key} scope="col" className={c.format === 'money' ? 'numeric' : undefined}>
+                {c.label}
+              </th>
             ))}
             {onSelect && (
               <th className="row-action">
@@ -1173,7 +1107,10 @@ function Table({ resource, items, lookups, onSelect, compact = false, currency =
                   className={`${i === 0 ? 'primary-cell' : ''} ${c.format === 'money' ? 'numeric' : ''}`}
                 >
                   {i === 0 && onSelect ? (
-                    <button className="table-link" onClick={() => onSelect(row)}>
+                    <button
+                      className={`table-link ${c.key === 'number' ? 'invoice-reference' : ''}`}
+                      onClick={() => onSelect(row)}
+                    >
                       {display(row, c)}
                     </button>
                   ) : (
@@ -1526,7 +1463,6 @@ function Dashboard({
 }) {
   const currency = report?.currency || 'INR';
   const monthly = report?.monthlyRevenue || [];
-  const max = Math.max(1, ...monthly.flatMap((m) => [Number(m.invoiced), Number(m.payments)]));
   const status = report?.subscriptionBreakdown || [];
   const total = status.reduce((n, s) => n + s.count, 0);
   return (
@@ -1655,41 +1591,7 @@ function Dashboard({
                   </span>
                 </header>
                 {monthly.length ? (
-                  <div className="chart">
-                    <div className="chart-axis">
-                      <span>{money(max, currency)}</span>
-                      <span>{money(max / 2, currency)}</span>
-                      <span>{money(0, currency)}</span>
-                    </div>
-                    <div className="chart-plot">
-                      <div className="chart-gridlines">
-                        <i />
-                        <i />
-                        <i />
-                      </div>
-                      {monthly.map((m) => (
-                        <div className="bar-group" key={m.month}>
-                          <div className="bar-pair">
-                            <div
-                              className="bar invoice-bar"
-                              style={{
-                                height: `${Math.max(0, (Number(m.invoiced) / max) * 100)}%`,
-                              }}
-                              title={`${m.month}: invoiced ${money(m.invoiced, currency)}`}
-                            />
-                            <div
-                              className="bar payment-bar"
-                              style={{
-                                height: `${Math.max(0, (Number(m.payments) / max) * 100)}%`,
-                              }}
-                              title={`${m.month}: collected ${money(m.payments, currency)}`}
-                            />
-                          </div>
-                          <span>{m.month}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <RevenueChart monthly={monthly} currency={currency} />
                 ) : (
                   <div className="empty-chart">
                     <BarChart3 size={34} />
@@ -1715,18 +1617,18 @@ function Dashboard({
                 </div>
                 <div className="status-bars">
                   {status.length ? (
-                    status.map((s, i) => (
+                    status.map((s) => (
                       <div key={s.status}>
                         <div>
                           <span>
-                            <i className={`status-dot dot-${i % 6}`} />
+                            <i className={`status-dot status-${s.status.toLowerCase()}`} />
                             {s.status}
                           </span>
                           <strong>{s.count}</strong>
                         </div>
                         <div className="track">
                           <span
-                            className={`fill-${i % 6}`}
+                            className={`fill-${s.status.toLowerCase()}`}
                             style={{ width: `${total ? (s.count / total) * 100 : 0}%` }}
                           />
                         </div>
@@ -1985,12 +1887,16 @@ export default function App() {
             <small>{user.role === 'customer' ? 'Customer portal' : 'Organization workspace'}</small>
           </div>
         </div>
-        <nav aria-label="Main navigation">
-          {navItems.map(([id, label, Icon], i) => (
+        <nav id="workspace-navigation" aria-label="Main navigation">
+          {navItems.map(([id, label, Icon]) => (
             <React.Fragment key={id}>
               {id === 'customers' && <span className="nav-section">Workspace</span>}
               {id === 'taxes' && <span className="nav-section">Configuration</span>}
-              <button className={page === id ? 'selected' : ''} onClick={() => navigate(id)}>
+              <button
+                className={page === id ? 'selected' : ''}
+                aria-current={page === id ? 'page' : undefined}
+                onClick={() => navigate(id)}
+              >
                 <Icon size={18} />
                 <span>{label}</span>
                 {page === id && <span className="nav-active-dot" />}
@@ -2000,6 +1906,7 @@ export default function App() {
           {user.role === 'customer' && (
             <button
               className={page === 'profile' ? 'selected' : ''}
+              aria-current={page === 'profile' ? 'page' : undefined}
               onClick={() => navigate('profile')}
             >
               <Building2 size={18} />
@@ -2008,7 +1915,7 @@ export default function App() {
           )}
         </nav>
         <div className="sidebar-bottom">
-          <button className="user-button" onClick={logout}>
+          <button className="user-button" aria-label="Sign out" onClick={logout}>
             <span className="avatar">{initials(user.name)}</span>
             <span>
               <strong>{user.name}</strong>
@@ -2024,6 +1931,8 @@ export default function App() {
             <button
               className="icon-button mobile-menu"
               aria-label="Open navigation"
+              aria-expanded={mobile}
+              aria-controls="workspace-navigation"
               onClick={() => setMobile(true)}
             >
               <Menu size={21} />
