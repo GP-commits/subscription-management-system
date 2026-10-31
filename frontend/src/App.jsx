@@ -67,20 +67,20 @@ const labels = {
 };
 labels.overview = 'Billing overview';
 const descriptions = {
-  overview: 'A clear view of your recurring business.',
-  customers: 'Every customer, every relationship, in one place.',
-  products: 'Build your catalog with flexible products and variants.',
-  plans: 'Recurring plans that grow with your customers.',
-  templates: 'Start every customer conversation with a consistent offer.',
-  subscriptions: 'Manage the complete subscription lifecycle.',
-  invoices: 'From billing day to paid. Keep every invoice in view.',
-  payments: 'Track incoming payments and reconcile balances.',
-  reports: 'Understand what is billed, collected, and outstanding.',
-  taxes: 'Set effective tax rates for your catalog.',
-  discounts: 'Create offers that apply automatically at billing.',
-  staff: 'Give your team the access they need.',
-  outbox: 'Preview email queued by your local development environment.',
-  profile: 'Manage your customer and billing details.',
+  overview: 'Subscriptions, invoices, and receivables',
+  customers: 'Customer contacts and billing details',
+  products: 'Products, prices, and variants',
+  plans: 'Billing intervals and subscription policies',
+  templates: 'Reusable plans and product lines for quotations',
+  subscriptions: 'Contracts, billing dates, and lifecycle actions',
+  invoices: 'Issued charges and outstanding balances',
+  payments: 'Receipts recorded against customer invoices',
+  reports: 'Invoiced revenue, cash received, and balances due',
+  taxes: 'Tax rates, applicable products, and effective dates',
+  discounts: 'Offers, eligibility, and redemption limits',
+  staff: 'Staff accounts and access',
+  outbox: 'Email queued in this development environment',
+  profile: 'Your contact and billing details',
 };
 const moneyKeys = [
   'salesPrice',
@@ -336,7 +336,7 @@ function Brand({ light = false }) {
         b<span />
       </span>
       <span>
-        brightloop<span className="brand-sub">BILLING</span>
+        brightloop<span className="brand-sub">Billing</span>
       </span>
     </div>
   );
@@ -487,23 +487,20 @@ function Auth({ onLogin }) {
       <aside className="auth-story">
         <Brand light />
         <div>
-          <span className="eyebrow">ONE WORKSPACE. EVERY BILLING MOMENT.</span>
+          <span className="context-label">Brightloop Software</span>
           <h1>
-            More clarity.
+            From subscription
             <br />
-            Less busywork.
+            to settled invoice
           </h1>
-          <p>
-            Bring your subscriptions, invoices, and payments together. Make room for what comes
-            next.
-          </p>
+          <p>Manage recurring contracts, issue invoices, and keep customer balances in view</p>
           <div className="story-cards">
             <div>
               <RefreshCw />
               <span>
                 Subscriptions
                 <br />
-                <strong>A complete lifecycle</strong>
+                <strong>Quote, activate, renew</strong>
               </span>
               <Check size={18} />
             </div>
@@ -512,16 +509,16 @@ function Auth({ onLogin }) {
               <span>
                 Recurring billing
                 <br />
-                <strong>Always accounted for</strong>
+                <strong>Scheduled invoices and taxes</strong>
               </span>
               <Check size={18} />
             </div>
             <div>
               <BarChart3 />
               <span>
-                Your business
+                Receivables
                 <br />
-                <strong>Clearly in view</strong>
+                <strong>Payments and outstanding balances</strong>
               </span>
               <Check size={18} />
             </div>
@@ -534,24 +531,24 @@ function Auth({ onLogin }) {
           <Brand />
         </div>
         <form className="auth-card" onSubmit={submit}>
-          <span className="eyebrow">WELCOME TO BRIGHTLOOP</span>
+          <span className="context-label">Account access</span>
           <h2>
             {
               {
-                login: 'Good to see you again.',
-                register: 'Create your account.',
-                forgot: 'Let’s get you back in.',
-                reset: 'Choose a new password.',
+                login: 'Sign in to Brightloop',
+                register: 'Create your account',
+                forgot: 'Reset your password',
+                reset: 'Choose a new password',
               }[mode]
             }
           </h2>
           <p>
             {
               {
-                login: 'Sign in to your subscription workspace.',
-                register: 'Manage your subscriptions with a single account.',
-                forgot: 'We’ll email a reset link if an account exists.',
-                reset: 'Use a strong password you haven’t used before.',
+                login: 'Access your subscriptions, invoices, and payments',
+                register: 'View and manage your Brightloop subscriptions',
+                forgot: 'We’ll email a reset link if an account exists',
+                reset: 'Use a password you haven’t used before',
               }[mode]
             }
           </p>
@@ -636,7 +633,7 @@ function Auth({ onLogin }) {
             )}
           </div>
         </form>
-        <small className="auth-foot">Your billing, connected.</small>
+        <small className="auth-foot">Brightloop Software · Subscription management</small>
       </main>
     </div>
   );
@@ -689,7 +686,7 @@ function ReferenceInput({
         type="search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder={`Search ${source}…`}
+        placeholder="Search"
       />
       <select
         aria-label={`Select ${source}`}
@@ -786,7 +783,7 @@ function LineEditor({ lines, onChange, lookups }) {
         return (
           <div className="line-card" key={i}>
             <div className="line-count">
-              LINE {i + 1}
+              Line {i + 1}
               <button
                 type="button"
                 className="icon-button danger"
@@ -1534,20 +1531,16 @@ function Dashboard({
   const total = status.reduce((n, s) => n + s.count, 0);
   return (
     <>
-      <div className="dashboard-greeting">
+      <div className="billing-context">
         <div>
-          <span className="eyebrow">
-            {reports ? 'FINANCIAL PERFORMANCE' : 'YOUR WORKSPACE AT A GLANCE'}
+          <span className="context-label">
+            {reports ? 'Financial summary' : 'Subscription accounts'}
           </span>
-          <h2>
-            {reports
-              ? 'Every number tells a story.'
-              : `Welcome back, ${user.name?.split(' ')[0] || 'there'}.`}
-          </h2>
+          <h2>{reports ? 'Revenue and collections' : 'Billing at a glance'}</h2>
           <p>
             {reports
-              ? 'Invoiced revenue and collected payments, clearly separated.'
-              : 'Here’s what’s happening with your subscriptions.'}
+              ? 'Revenue and receipts use the selected dates; receivables show current balances'
+              : 'Review active contracts, recent invoices, and overdue accounts'}
           </p>
         </div>
         <button className="button secondary" onClick={refresh}>
@@ -1624,41 +1617,14 @@ function Dashboard({
           <>
             <div className="kpi-grid">
               {[
-                [
-                  RefreshCw,
-                  'Active subscriptions',
-                  report.activeSubscriptions,
-                  'subscriptions',
-                  'active',
-                ],
-                [
-                  CircleDollarSign,
-                  'Invoiced revenue',
-                  money(report.invoicedRevenue, currency),
-                  'invoices',
-                  'revenue',
-                ],
-                [
-                  Wallet,
-                  'Payments received',
-                  money(report.paymentsReceived, currency),
-                  'payments',
-                  'payments',
-                ],
-                [
-                  ClockIcon,
-                  'Outstanding balance',
-                  money(report.outstanding, currency),
-                  'invoices',
-                  'outstanding',
-                ],
-              ].map(([Icon, label, value, target, tone]) => (
+                ['Active subscriptions', report.activeSubscriptions, 'subscriptions'],
+                ['Invoiced revenue', money(report.invoicedRevenue, currency), 'invoices'],
+                ['Payments received', money(report.paymentsReceived, currency), 'payments'],
+                ['Outstanding balance', money(report.outstanding, currency), 'invoices'],
+              ].map(([label, value, target]) => (
                 <button className="kpi-card" key={label} onClick={() => onNavigate(target)}>
                   <div className="kpi-top">
                     <span>{label}</span>
-                    <span className={`metric-icon ${tone}`}>
-                      <Icon size={18} />
-                    </span>
                   </div>
                   <strong>{value ?? 0}</strong>
                   <div className="kpi-foot">
@@ -1671,7 +1637,6 @@ function Dashboard({
                             ? 'Recorded receipts less reversals'
                             : `${report.overdueCount} overdue invoices`}
                     </span>
-                    <ArrowUpRight size={15} />
                   </div>
                 </button>
               ))}
@@ -1681,7 +1646,7 @@ function Dashboard({
                 <header className="panel-header">
                   <div>
                     <h3>Revenue overview</h3>
-                    <p>Your billing and collection activity</p>
+                    <p>Invoiced revenue compared with cash received</p>
                   </div>
                   <span className="chart-legend">
                     <i />
@@ -1728,7 +1693,7 @@ function Dashboard({
                 ) : (
                   <div className="empty-chart">
                     <BarChart3 size={34} />
-                    <p>Your revenue activity will appear here.</p>
+                    <p>No invoiced revenue or payments for this period</p>
                   </div>
                 )}
                 <footer className="panel-foot">
@@ -1768,7 +1733,7 @@ function Dashboard({
                       </div>
                     ))
                   ) : (
-                    <p className="muted">Create a subscription to get started.</p>
+                    <p className="muted">No subscriptions in this selection</p>
                   )}
                 </div>
                 <button className="panel-link" onClick={() => onNavigate('subscriptions')}>
@@ -1782,7 +1747,7 @@ function Dashboard({
                 <header className="panel-header">
                   <div>
                     <h3>Recent invoices</h3>
-                    <p>The latest from your billing desk</p>
+                    <p>Open an invoice to review its lines and balance</p>
                   </div>
                   <button className="text-button" onClick={() => onNavigate('invoices')}>
                     View all
@@ -1804,12 +1769,12 @@ function Dashboard({
               <section className="panel receivables-panel">
                 <header className="panel-header">
                   <div>
-                    <h3>Needs attention</h3>
-                    <p>Stay ahead of overdue balances</p>
+                    <h3>Overdue accounts</h3>
+                    <p>Confirmed invoices past their due dates</p>
                   </div>
                   <Bell size={18} />
                 </header>
-                <span className="overdue-label">OVERDUE RECEIVABLES</span>
+                <span className="overdue-label">Overdue receivables</span>
                 <strong className="overdue-value">{money(report.overdueAmount, currency)}</strong>
                 <span className="muted">
                   Across {report.overdueCount} unpaid{' '}
@@ -1838,7 +1803,6 @@ function Dashboard({
     </>
   );
 }
-const ClockIcon = CalendarDays;
 
 export default function App() {
   const [user, setUser] = useState(null),
@@ -2013,7 +1977,7 @@ export default function App() {
         />
       )}
       <aside className={`sidebar ${mobile ? 'open' : ''}`}>
-        <Brand light />
+        <Brand />
         <div className="workspace-switch">
           <span className="workspace-avatar">B</span>
           <div>
@@ -2024,8 +1988,8 @@ export default function App() {
         <nav aria-label="Main navigation">
           {navItems.map(([id, label, Icon], i) => (
             <React.Fragment key={id}>
-              {id === 'customers' && <span className="nav-section">WORKSPACE</span>}
-              {id === 'taxes' && <span className="nav-section">CONFIGURATION</span>}
+              {id === 'customers' && <span className="nav-section">Workspace</span>}
+              {id === 'taxes' && <span className="nav-section">Configuration</span>}
               <button className={page === id ? 'selected' : ''} onClick={() => navigate(id)}>
                 <Icon size={18} />
                 <span>{label}</span>
@@ -2044,14 +2008,6 @@ export default function App() {
           )}
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-note">
-            <ShieldCheck size={18} />
-            <span>
-              One connected
-              <br />
-              <strong>billing workspace</strong>
-            </span>
-          </div>
           <button className="user-button" onClick={logout}>
             <span className="avatar">{initials(user.name)}</span>
             <span>
@@ -2173,7 +2129,7 @@ export default function App() {
                   <Search size={17} />
                   <input
                     aria-label={`Search ${labels[page].toLowerCase()}`}
-                    placeholder={`Search ${labels[page].toLowerCase()}…`}
+                    placeholder="Search"
                     type="search"
                     value={search}
                     onChange={(e) => {
@@ -2268,7 +2224,7 @@ export default function App() {
           )}
           <footer className="workspace-footer">
             <span>Brightloop Software</span>
-            <span>Subscriptions, simplified.</span>
+            <span>Subscription management</span>
           </footer>
         </main>
       </div>

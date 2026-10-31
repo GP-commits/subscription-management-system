@@ -74,7 +74,7 @@ describe('authentication workflows', () => {
     await user.type(await screen.findByLabelText('Email address'), 'alex@example.test');
     await user.type(screen.getByLabelText('Password'), 'SecurePass!23');
     await user.click(screen.getByRole('button', { name: 'Sign in', exact: true }));
-    await screen.findByRole('heading', { name: 'Welcome back, Alex.' });
+    await screen.findByRole('heading', { name: 'Billing at a glance' });
     expect(calls.find((c) => c.path === '/auth/login').body).toEqual({
       name: '',
       email: 'alex@example.test',
@@ -84,7 +84,9 @@ describe('authentication workflows', () => {
     expect(
       global.fetch.mock.calls.find(([url]) => url.endsWith('/auth/login'))[1].credentials,
     ).toBe('include');
-    expect(await screen.findByRole('button', { name: /Active subscriptions 3/ })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: /Active subscriptions 3/ }),
+    ).toBeInTheDocument();
   });
   it('validates the full registration password rule before sending', async () => {
     const calls = mockServer({ unauthenticated: true });
@@ -118,7 +120,7 @@ describe('authentication workflows', () => {
     await user.type(await screen.findByLabelText(/Password/), 'NewSecure!23');
     await user.click(screen.getByRole('button', { name: 'Update password' }));
     expect(
-      await screen.findByRole('heading', { name: 'Good to see you again.' }),
+      await screen.findByRole('heading', { name: 'Sign in to Brightloop' }),
     ).toBeInTheDocument();
     expect(calls.find((c) => c.path === '/auth/reset-password').body).toEqual({
       token: 'reset-token',
