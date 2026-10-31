@@ -2,15 +2,20 @@
   "name": "brightloop-subscription-management",
   "version": "1.0.0",
   "private": true,
-  "description": "Brightloop subscription management backend repository",
+  "description": "Brightloop subscription management frontend and backend",
   "engines": {
     "node": ">=24.14.0 <25"
   },
   "scripts": {
-    "setup": "npm --prefix backend ci",
-    "dev": "npm --prefix backend run dev",
+    "setup": "npm --prefix backend ci && npm --prefix frontend ci",
+    "dev": "npm run dev:backend",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
     "seed": "npm --prefix backend run seed",
-    "test": "npm --prefix backend test",
-    "check": "npm test"
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "npm --prefix backend test",
+    "test:frontend": "npm --prefix frontend test",
+    "build": "npm --prefix frontend run build",
+    "check": "npm test && npm run build"
   }
 }

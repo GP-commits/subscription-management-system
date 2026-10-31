@@ -70,20 +70,10 @@ Main resources: `/auth`, `/customers`, `/products`, `/plans`, `/templates`, `/su
 
 Subscription line input `unitPrice` is the base price before the variant adjustment; response lines contain the final unit price. The editor subtracts the saved adjustment before editing so a variant is not charged twice. The plan's base fee is additional to line charges. Subscriptions use calendar-aligned expiry dates; the server rejects unsupported partial periods. Pause catches up already-due billing; resume continues at the next original calendar boundary and skips paused periods. Customer lifecycle buttons respect the subscription's saved plan policy.
 
-## Handoff to another GitHub account
+## Shared repository handoff
 
-The separate `brightloop-frontend.bundle` preserves the initial commit and subsequent feature commits. Clone it to keep that history, then point the remote at the team's frontend repository when that account is available:
+The team chose to submit frontend and backend in **GP-commits/subscription-management-system**, with independent folders and package manifests. The frontend's original commits have been imported beneath `frontend/`, preserving their authors and feature boundaries. Run `npm run check` from the repository root to verify both applications. The active frontend GitHub Actions workflow is `.github/workflows/frontend-ci.yml` at the repository root; the nested workflow is retained only for standalone extraction.
 
-```sh
-git clone brightloop-frontend.bundle brightloop-frontend
-cd brightloop-frontend
-git remote set-url origin <FRONTEND_REPOSITORY_URL>
-npm ci
-npm test
-npm run build
-git push -u origin main
-```
+The prepared `frontend-handoff` branch can be pushed by the teammate after collaborator access is accepted, then reviewed and merged into `main`. Use the complete-repository bundle for this handoff. The older standalone frontend bundle is for a separate repository and must not replace the backend repository history.
 
-The source-only `brightloop-frontend.zip` can instead be extracted into an empty working directory; it does not contain Git history. The included `.github/workflows/ci.yml` runs tests and the build on Node 24. Keep `node_modules/`, `dist/`, credentials, and real `.env` files out of Git.
-
-The backend remains separately hosted and maintained. Set `VITE_API_URL` and the backend `FRONTEND_URL` together for the team's deployment. No frontend GitHub account or collaborator access has been configured yet.
+Both applications currently run locally; neither has been deployed by this handoff. Set `VITE_API_URL` and the backend `FRONTEND_URL` together if deploying later.

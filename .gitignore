@@ -16,5 +16,3 @@ data/
 playwright-report/
 test-results/
 *.zip
-# Frontend is delivered separately for the teammate's GitHub account.
-/frontend/

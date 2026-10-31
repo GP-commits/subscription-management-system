@@ -1,8 +1,8 @@
 # Brightloop Subscription Management
 
-Backend for the subscription-management application described in the supplied PDF: customer accounts, plans and variants, quotations, subscription lifecycle, scheduled recurring invoices, taxes, discounts, payments, and reports.
+Full-stack subscription-management application described in the supplied PDF: customer accounts, plans and variants, quotations, subscription lifecycle, scheduled recurring invoices, taxes, discounts, payments, and reports.
 
-The React frontend is delivered separately for the teammate's GitHub account. It is intentionally excluded from this repository. It connects through the documented HTTP API and does not import backend source.
+The React frontend and Node.js backend live in separate `frontend/` and `backend/` folders in this repository. Each has its own package manifest, lockfile, tests, and runtime. The frontend connects through the documented HTTP API and does not import backend source.
 
 ## Quick start
 
@@ -10,13 +10,12 @@ Install Node.js 24.14 or a newer Node 24 release, then:
 
 ```sh
 npm run setup
-cd backend
-cp .env.example .env
+cp backend/.env.example backend/.env
 npm run seed
-npm run dev
+npm run dev:backend
 ```
 
-On Windows PowerShell, `Copy-Item .env.example .env` also works. The API is available at http://localhost:4000/api. Unpack the separate frontend source, run `npm ci`, then `npm run dev` in its directory. Open http://localhost:5173.
+On Windows PowerShell, use `Copy-Item backend/.env.example backend/.env`. The API is available at http://localhost:4000/api. In a second terminal at the repository root, run `npm run dev:frontend`, then open http://localhost:5173. The Vite proxy sends `/api` calls to the backend.
 
 The seed command creates demonstration data and these local-only accounts:
 
@@ -42,15 +41,17 @@ Read [billing decisions](docs/billing-decisions.md) for defaults where the brief
 ## Verification
 
 ```sh
-npm test
+npm run check
 ```
 
-Tests use isolated databases and a local SMTP receiver. GitHub Actions runs the backend suite. The separate frontend includes its own test/build workflow.
+The root check command runs both test suites and the frontend production build. Backend tests use isolated databases and a local SMTP receiver; frontend component tests mock the network. GitHub Actions has separate backend and frontend workflows in the root `.github/workflows/` folder.
 
 See [acceptance coverage](docs/acceptance.md) and [verification results](docs/verification.md) for executed checks and limits. The PDF's two-second page target must also be validated on the intended deployment, network, and concurrency; API benchmarks alone do not establish every browser page's load time.
 
 ## Layout
 
+- `frontend/src/`: React interface, API client, reusable chart/dialog components, and styles.
+- `frontend/test/`: interface workflows, keyboard behavior, chart data, and utility tests.
 - `backend/src/`: API, security, database, billing engine, mail delivery, server, and demo data.
 - `backend/test/`: domain, API, financial integrity, access, email, and performance tests.
 - `backend/scripts/backup.mjs`: verified online SQLite backup.
@@ -62,4 +63,4 @@ SQLite storage must be persistent. The supported deployment is a single backend 
 
 ## Collaboration
 
-The first commit is `initial commit`. Use focused feature branches and pull requests for subsequent changes. Do not commit `.env`, database files, secrets, or actual customer records. The owner will provide the frontend destination account separately.
+The first commit is `initial commit`. Use focused feature branches and pull requests for subsequent changes. Do not commit `.env`, database files, secrets, or actual customer records. The teammate should push the prepared `frontend-handoff` branch to this same repository and open a pull request into `main`. Imported frontend commits retain their original authors; pushing a branch does not change authorship. Each teammate should make and understand their own genuine contributions. Do not force-push an unrelated standalone frontend history over this repository.

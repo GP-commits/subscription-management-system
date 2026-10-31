@@ -8,7 +8,7 @@ Approved direction: a precise, calm billing workspace, with the clarity of a fin
 - **Billing language — `d6ddebb`:** specific account, invoice, and receivable labels replace generic greetings and marketing text. Dashboard metrics retain their live values and navigation actions while decorative icon tiles and sidebar filler are removed. Reports explain which figures follow the selected date range.
 - **Accessibility — `68a2727`:** monthly chart amounts are available in a disclosure table with currency, row headings, and exact figures. Long histories scroll; compact axis labels prevent large amounts from overflowing while the table preserves precision. Active subscription status has a consistent semantic color. Monetary headings align with their figures, and invoice references use a monospace face. Dialogs contain keyboard focus, restore the trigger and body scrolling, and close with Escape. Navigation announces the current page and names the sign-out action.
 
-No API contracts, permission rules, billing calculations, or stored business data were changed by this refinement. The frontend remains an independent Git repository; the backend GitHub repository is separate.
+No API contracts, permission rules, billing calculations, or stored business data were changed by this refinement. This refinement was originally committed in an independent frontend repository. For the shared submission, those feature commits have now been imported under `frontend/` in the same repository as `backend/`; the applications retain separate package manifests and runtimes. Original revision IDs above identify the source history before import.
 
 ## Validation and remaining review
 

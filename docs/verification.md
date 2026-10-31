@@ -1,11 +1,11 @@
 # Verification results — 2026-10-31
 
-Runtime: Windows, Node.js 24.14.1, npm 11.11.0. All results below were executed locally against the delivered source.
+Runtime: Windows, Node.js 24.14.1, npm 11.11.0. All results below were executed locally against the delivered source. The combined frontend-handoff branch was installed from its lockfiles and passed the root `npm run check` command: 28 backend tests, 27 frontend tests, and a production frontend build.
 
 | Check                       | Result                                                                                                |
 | --------------------------- | ----------------------------------------------------------------------------------------------------- |
 | Backend `npm test`          | 28 passed, 0 failed, 0 skipped; approximately 2.3 seconds                                             |
-| Frontend `npm test`         | 17 passed across 2 test files, 0 failed                                                               |
+| Frontend `npm test`         | 27 passed across 4 test files, 0 failed                                                               |
 | Frontend `npm run build`    | Passed; static production bundle generated                                                            |
 | Backend `npm audit --json`  | 0 known vulnerabilities reported                                                                      |
 | Frontend `npm audit --json` | 0 known vulnerabilities reported, including development dependencies                                  |
@@ -34,7 +34,7 @@ This establishes the tested API response times only. It is not a measurement of 
 
 ## Frontend coverage
 
-Thirteen jsdom/Testing Library workflows and four utility tests cover authentication, password validation, reset requests, reset completion, role navigation, restricted profile updates, product and variant creation, server validation errors, payment reversal confirmation, loading/error states, invoice detail/confirmation, portal invitations, and money/date formatting. Network responses are mocked in these component tests; the backend is tested separately through real HTTP requests.
+The jsdom/Testing Library workflow, dialog, chart, and utility suites cover authentication, password validation, reset requests, reset completion, role navigation, restricted profile updates, product and variant creation, server validation errors, payment reversal confirmation, loading/error states, invoice detail/confirmation, portal invitations, money/date formatting, dialog focus containment/restoration, active navigation announcements, and exact chart data for long histories, large/zero amounts, and currency updates. Network responses are mocked in these component tests; the backend is tested separately through real HTTP requests.
 
 ## Unverified external conditions
 

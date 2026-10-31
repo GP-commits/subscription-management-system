@@ -6,7 +6,7 @@ Use Node.js 24.14 or newer within the Node 24 release line. The backend uses Nod
 
 ## Separate applications
 
-The backend listens on port 4000 by default. The independently delivered React application runs on port 5173 in development and proxies `/api` to the backend. The frontend source is intentionally excluded from this GitHub repository because its destination will be the teammate's account.
+The backend in `backend/` listens on port 4000 by default. The independently runnable React application in `frontend/` runs on port 5173 in development and proxies `/api` to the backend. Both applications are included in this shared submission repository and keep separate package manifests and runtimes.
 
 For production, serve the frontend build with a web server and reverse-proxy `/api` to the backend under the same HTTPS origin. Set `FRONTEND_URL` to that exact public origin and `NODE_ENV=production`. Secure session cookies require HTTPS. Preserve the request `Origin` header and the `/api` path. Do not use the Vite development server as production hosting.
 

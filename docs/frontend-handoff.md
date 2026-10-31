@@ -1,12 +1,12 @@
-# Separate frontend handoff
+# Frontend handoff in the shared repository
 
-The frontend is supplied as a standalone source archive. It is not tracked in GP-commits/subscription-management-system, in accordance with the owner's request. The initial commit contained only a frontend placeholder README; application frontend code has never been pushed here.
+The team chose to submit both applications in GP-commits/subscription-management-system. The `frontend-handoff` branch includes `frontend/` alongside `backend/`, with separate dependencies, tests, and runtime processes. Original frontend commits were imported beneath `frontend/` with their authors and feature boundaries preserved.
 
 ## Running independently
 
-Unzip the frontend source, install Node 24.14 or newer Node 24, run `npm ci`, and run `npm run dev`. Keep the backend running on port 4000. The Vite proxy maps `/api` to `http://localhost:4000`; `VITE_API_URL` can configure a different API base. Use consistent `localhost` hostnames in development so cookie sessions work.
+Install Node 24.14 or newer Node 24, enter `frontend/`, run `npm ci`, and run `npm run dev`. Keep the backend running on port 4000. The Vite proxy maps `/api` to `http://localhost:4000`; `VITE_API_URL` can configure a different API base. Use consistent `localhost` hostnames in development so cookie sessions work.
 
-Run `npm test` and `npm run build` before submitting changes. The archive contains its own package manifest, lockfile, source, environment example, README, tests, and future GitHub Actions workflow. No node_modules, runtime secrets, database, or Git credentials belong in the archive.
+Run `npm test` and `npm run build` before submitting changes. The frontend has its own package manifest, lockfile, source, environment example, README, and tests. The active frontend CI workflow lives in the root `.github/workflows/frontend-ci.yml`. Keep node_modules, runtime secrets, database files, and Git credentials untracked.
 
 ## Integration
 
@@ -14,9 +14,9 @@ Use [the API contract](api.md). Money values are in major currency units, dates 
 
 For deployment, serve the frontend and reverse-proxy `/api` under the same HTTPS origin. Configure the backend's FRONTEND_URL accordingly. If using separate origins, cookie and origin policies must be configured and tested explicitly.
 
-## Publishing later
+## Teammate push
 
-When the owner supplies the friend's GitHub account or repository, initialize/push the independent frontend there with the account owner's authorization. Do not copy the backend .git directory or credentials. Keeping source separate means frontend contributors can commit and deploy without rewriting backend history.
+After accepting repository collaborator access, the teammate can fetch `frontend-handoff` from the complete-repository Git bundle into a clone of the existing GitHub repository, verify `npm run check`, and push the branch. Open a pull request into `main`; use a merge commit to retain the feature history. Do not replace the backend repository with the older standalone frontend bundle or force-push unrelated history. Authentication as the teammate records who pushes; existing commit authors remain unchanged.
 
 ## Design
 
